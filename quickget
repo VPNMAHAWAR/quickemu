@@ -57,6 +57,7 @@ function pretty_name() {
     opensuse)           PRETTY_NAME="openSUSE";;
     oraclelinux)        PRETTY_NAME="Oracle Linux";;
     popos)              PRETTY_NAME="Pop!_OS";;
+    parrot)             PRETTY_NAME="Parrot OS";;
     regolith)           PRETTY_NAME="Regolith Linux";;
     rockylinux)         PRETTY_NAME="Rocky Linux";;
     ubuntu-budgie)      PRETTY_NAME="Ubuntu Budgie";;
@@ -195,6 +196,7 @@ function os_support() {
     openbsd \
     opensuse \
     oraclelinux \
+    parrot \
     popos \
     regolith \
     rockylinux \
@@ -431,6 +433,14 @@ function releases_popos() {
 
 function editions_popos() {
     echo intel nvidia
+}
+
+function releases_parrot() {
+    echo 5.0.1
+}
+
+function editions_parrot() {
+    echo home security
 }
 
 function releases_regolith() {
@@ -1285,6 +1295,16 @@ function get_popos() {
     URL=$(wget -q -O- "https://api.pop-os.org/builds/${RELEASE}/${EDITION}" | jq -r .url)
     HASH=$(wget -q -O- "https://api.pop-os.org/builds/${RELEASE}/${EDITION}" | jq -r .sha_sum)
     echo "${URL} ${HASH}"
+}
+
+function get_parrot() {
+    local EDITION="${1:-}"
+    local HASH=""
+    local ISO="Parrot-${EDITION}-${RELEASE}_amd64.iso"
+    local URL="https://download.parrot.sh/parrot/iso/${RELEASE}"
+
+    HASH=$(wget -q -O- "${URL}/signed-hashes.txt" | grep -A12 sha256 | grep ${ISO} | cut -d' ' -f1)
+    echo "${URL}/${ISO} ${HASH}"
 }
 
 function get_regolith() {
